@@ -9,5 +9,5 @@ Employee createEmployee(Employee employee);
 Employee getEmployeeById(Long id);
 List<Employee> getAllEmployees();
 Employee updateEmployee(Long id, Employee employee);
-Boolean deleteEmployee(Long id);
+void deleteEmployee(Long id);
 }
