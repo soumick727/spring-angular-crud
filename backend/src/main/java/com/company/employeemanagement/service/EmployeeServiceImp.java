@@ -1,19 +1,19 @@
 package com.company.employeemanagement.service;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.company.employeemanagement.exception.ResourceNotFoundException;
 import com.company.employeemanagement.model.Employee;
 import com.company.employeemanagement.repository.EmployeeRepo;
-
 
 @Service
 public class EmployeeServiceImp implements EmployeeService {
     @Autowired
     private EmployeeRepo employeeRepo;
+
     @Override
     public Employee createEmployee(Employee employee) {
         return employeeRepo.save(employee);
@@ -21,10 +21,9 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public Employee getEmployeeById(Long id) {
-        return employeeRepo.findById(id).orElse(null);
+        return employeeRepo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
     }
-
-    
 
     @Override
     public List<Employee> getAllEmployees() {
@@ -33,18 +32,16 @@ public class EmployeeServiceImp implements EmployeeService {
 
     @Override
     public Employee updateEmployee(Long id, Employee employee) {
-        if(employeeRepo.existsById(id)){
+        if (employeeRepo.existsById(id)) {
             employee.setId(id);
             return employeeRepo.save(employee);
         }
-        return null;
+        throw new ResourceNotFoundException("Employee not found with id: " + id);
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        Employee existing = getEmployeeById(id);
+        Employee existing = getEmployeeById(id);  // This will throw if not found
         employeeRepo.delete(existing);
     }
-
-    
 }
